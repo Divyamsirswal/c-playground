@@ -41,7 +41,7 @@ export default function HeroSection() {
                             {"\n"}
                             <span className="text-blue-400">int</span> <span className="text-yellow-300">main</span><span className="text-white">(){"{"}</span>
                             {"\n"}
-                            {'  '} <span className="text-white">std::</span><span className="text-yellow-300">cout &lt;&lt;</span> <span className="text-green-400">"Hello, Professional World!"</span> <span className="text-yellow-300">&lt;&lt;</span> <span className="text-white">std::</span><span className="text-yellow-300">endl;</span>
+                            {'  '} <span className="text-white">std::</span><span className="text-yellow-300">cout &lt;&lt;</span> <span className="text-green-400">&quot;Hello, Professional World!&quot;</span> <span className="text-yellow-300">&lt;&lt;</span> <span className="text-white">std::</span><span className="text-yellow-300">endl;</span>
                             {"\n"}
                             {'   '}<span className="text-purple-400">return</span> <span className="text-white">0;</span>
                             {"\n"}

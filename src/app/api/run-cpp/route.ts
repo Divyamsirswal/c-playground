@@ -17,7 +17,15 @@ interface Judge0Response {
     message?: string;
 }
 
-const executionCache = new Map<string, any>();
+interface ExecutionCacheData {
+    output: string;
+    error: boolean;
+    status: string;
+    executionTime: number;
+}
+
+
+const executionCache = new Map<string, ExecutionCacheData>();
 
 export async function POST(request: NextRequest) {
     try {
@@ -31,7 +39,6 @@ export async function POST(request: NextRequest) {
         console.log('🚀 Ultra-fast Judge0 execution starting...');
         const startTime = Date.now();
 
-        const submitStart = Date.now();
         const submitResponse = await fetch('https://ce.judge0.com/submissions', {
             method: 'POST',
             headers: {
@@ -59,7 +66,6 @@ export async function POST(request: NextRequest) {
         if (!submitResult.token) {
             throw new Error('No token received');
         }
-        const pollStart = Date.now();
         let attempts = 0;
 
         const smartDelays = [100, 150, 200, 300, 500, 800, 1000];
@@ -72,7 +78,6 @@ export async function POST(request: NextRequest) {
                 await new Promise(resolve => setTimeout(resolve, delay));
             }
 
-            const pollAttemptStart = Date.now();
 
             try {
                 const controller = new AbortController();
@@ -99,11 +104,10 @@ export async function POST(request: NextRequest) {
 
                 if (result.status && result.status.id !== 1 && result.status.id !== 2) {
                     const totalTime = Date.now() - startTime;
-                    const pollTime = Date.now() - pollStart;
 
                     let output = "";
                     let isError = false;
-                    let status = result.status.description || "Unknown";
+                    const status = result.status.description || "Unknown";
 
                     switch (result.status.id) {
                         case 3:

@@ -4,10 +4,6 @@ import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import Editor from "@monaco-editor/react";
 import { EditorRef } from "@/types/editor";
 
-interface FactResponse {
-    randFact: string;
-}
-
 const CodingArea = forwardRef<EditorRef>((props, ref) => {
     const [code, setCode] = useState<string>("");
 
@@ -21,7 +17,6 @@ const CodingArea = forwardRef<EditorRef>((props, ref) => {
             try {
                 const res = await fetch("/api/facts");
                 if (!res.ok) throw new Error("Failed to fetch fact.");
-                const data: FactResponse = await res.json();
                 const formatted = `#include <bits/stdc++.h>
 using namespace std;
 

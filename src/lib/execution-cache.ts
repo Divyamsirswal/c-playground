@@ -1,15 +1,15 @@
-interface CacheEntry {
-    result: any;
+interface CacheEntry<T> {
+    result: T;
     timestamp: number;
     hitCount: number;
 }
 
-class ExecutionCache {
-    private cache = new Map<string, CacheEntry>();
+class ExecutionCache<T> {
+    private cache = new Map<string, CacheEntry<T>>();
     private maxSize = 200;
     private maxAge = 5 * 60 * 1000; 
 
-    get(key: string): any | null {
+    get(key: string): T | null {
         const entry = this.cache.get(key);
 
         if (!entry) return null;
@@ -21,13 +21,13 @@ class ExecutionCache {
 
         entry.hitCount++;
         if (entry.hitCount > 3) {
-            entry.timestamp = Date.now(); 
+            entry.timestamp = Date.now();
         }
 
         return entry.result;
     }
 
-    set(key: string, value: any): void {
+    set(key: string, value: T): void {
         if (this.cache.size >= this.maxSize) {
             this.cleanup();
         }
@@ -35,7 +35,7 @@ class ExecutionCache {
         this.cache.set(key, {
             result: value,
             timestamp: Date.now(),
-            hitCount: 1
+            hitCount: 1,
         });
     }
 
@@ -57,8 +57,13 @@ class ExecutionCache {
             entriesToDelete.push(...sortedEntries.map(([key]) => key));
         }
 
-        entriesToDelete.forEach(key => this.cache.delete(key));
+        entriesToDelete.forEach((key) => this.cache.delete(key));
     }
 }
 
-export const executionCache = new ExecutionCache();
+export const executionCache = new ExecutionCache<{
+    output: string;
+    error: boolean;
+    status: string;
+    executionTime: number;
+}>();
