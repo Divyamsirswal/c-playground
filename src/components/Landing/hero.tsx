@@ -22,7 +22,7 @@ export default function HeroSection() {
                         <Link href="/code">Start Coding Now</Link>
                     </Button>
                     <Button size="lg" variant="outline" asChild>
-                        <Link href="https://github.com/your-repo" target="_blank">
+                        <Link href="https://github.com/Divyamsirswal/cpp-playground" target="_blank">
                             <Github className="mr-2 h-4 w-4" />
                             View on GitHub
                         </Link>

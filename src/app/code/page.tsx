@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CodeXml, Terminal, Play, Bot, Zap, Loader2 } from "lucide-react";
+import { CodeXml, Terminal, Play, Bot, Zap, Loader2, CornerUpLeft } from "lucide-react";
 
 import CodingArea from "@/components/Texteditor/coding-area";
 import InputArea from "@/components/Texteditor/input-area";
@@ -14,8 +14,10 @@ import {
 } from "@/components/ui/resizable";
 import { EditorRef, CodeExecutionResponse } from "@/types/editor";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
 
 export default function Code() {
+    const router = useRouter();
     const codingAreaRef = useRef<EditorRef>(null);
     const inputAreaRef = useRef<EditorRef>(null);
     const outputAreaRef = useRef<EditorRef>(null);
@@ -76,68 +78,88 @@ export default function Code() {
     };
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden bg-background text-foreground">
-
-            <main className=" p-2">
-                <ResizablePanelGroup direction="horizontal" className="h-full rounded-lg border">
+        <div className="flex flex-col h-screen overflow-hidden bg-gray-900 text-gray-100 font-sans">
+            <main className="p-3">
+                <ResizablePanelGroup
+                    direction="horizontal"
+                    className="h-full rounded-lg border border-gray-700 shadow-md"
+                >
                     <ResizablePanel defaultSize={65}>
-                        <div className="flex flex-col">
-                            {/* Panel Header for Code Editor */}
-                            <div className="flex items-center justify-between p-2 border-b">
-                                <div className="flex items-center gap-2">
-                                    <CodeXml className="h-5 w-5" />
-                                    <span className="font-semibold">main.cpp</span>
+                        <div className="flex flex-col h-full">
+                            {/* Panel Header */}
+                            <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-gray-800 select-none">
+                                <div className="flex items-center gap-3">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="mr-2 hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 transition"
+                                        aria-label="Back to Home"
+                                        onClick={() => router.push("/")}
+                                    >
+                                        <CornerUpLeft className="h-5 w-5 text-gray-300" />
+                                    </Button>
+                                    <CodeXml className="h-5 w-5 text-blue-400" />
+                                    <span className="font-semibold text-lg select-text">main.cpp</span>
                                 </div>
                                 <Button
                                     onClick={handleRun}
                                     disabled={isRunning}
                                     size="sm"
+                                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 transition"
                                 >
                                     {isRunning ? (
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" />
                                     ) : (
                                         <Play className="mr-2 h-4 w-4" />
                                     )}
                                     Run
                                 </Button>
                             </div>
-                            <div className="flex-grow">
+
+                            <div className="flex-grow bg-gray-900 border border-gray-700 rounded-b-md overflow-hidden">
                                 <CodingArea ref={codingAreaRef} />
                             </div>
                         </div>
                     </ResizablePanel>
-                    <ResizableHandle withHandle />
+
+                    <ResizableHandle className="bg-gray-700" />
+
                     <ResizablePanel defaultSize={35}>
-                        <ResizablePanelGroup direction="vertical">
+                        <ResizablePanelGroup direction="vertical" className="h-full">
                             <ResizablePanel defaultSize={40}>
-                                <div className="flex flex-col h-full">
-                                    <div className="flex items-center gap-2 p-2 border-b">
-                                        <Terminal className="h-5 w-5" />
-                                        <span className="font-semibold">Input (stdin)</span>
+                                <div className="flex flex-col h-full bg-gray-800 rounded-t-md border-b border-gray-700">
+                                    <div className="flex items-center gap-2 p-3 border-b border-gray-700 select-none text-gray-300 font-semibold">
+                                        <Terminal className="h-5 w-5 text-yellow-400" />
+                                        <span>Input (stdin)</span>
                                     </div>
-                                    <div className="flex-grow">
+                                    <div className="flex-grow overflow-auto">
                                         <InputArea ref={inputAreaRef} />
                                     </div>
                                 </div>
                             </ResizablePanel>
-                            <ResizableHandle withHandle />
+
+                            <ResizableHandle className="bg-gray-700" />
+
                             <ResizablePanel defaultSize={60}>
-                                <div className="flex flex-col h-full">
-                                    {/* Panel Header for Output */}
-                                    <div className="flex items-center justify-between p-2 border-b">
-                                        <div className="flex items-center gap-2">
+                                <div className="flex flex-col h-full bg-gray-800 rounded-b-md border border-t-0 border-gray-700">
+                                    <div className="flex items-center justify-between p-3 border-b border-gray-700 select-none">
+                                        <div className="flex items-center gap-2 text-green-400 font-semibold">
                                             <Bot className="h-5 w-5" />
-                                            <span className="font-semibold">Output</span>
+                                            <span>Output</span>
                                         </div>
-                                        {/* Display execution metadata here */}
+
                                         {executionTime !== null && (
-                                            <Badge variant={isCached ? "secondary" : "default"}>
-                                                <Zap className="mr-1 h-3 w-3" />
-                                                {executionTime}ms {isCached ? '(Cached)' : ''}
+                                            <Badge
+                                                variant={isCached ? "secondary" : "default"}
+                                                className="bg-gray-700 text-gray-200 flex items-center gap-1 px-3 py-1"
+                                            >
+                                                <Zap className="h-3 w-3 text-yellow-400" />
+                                                {executionTime}ms {isCached ? "(Cached)" : ""}
                                             </Badge>
                                         )}
                                     </div>
-                                    <div className="flex-grow">
+
+                                    <div className="flex-grow overflow-auto font-mono p-3 text-gray-100 whitespace-pre-wrap bg-gray-900 rounded-b-md">
                                         <OutputArea ref={outputAreaRef} />
                                     </div>
                                 </div>
